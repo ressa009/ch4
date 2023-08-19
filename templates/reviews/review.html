@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load list_filter %}
+{% block content %}
+
+<!-- Header-->
+<header class="bg-primary bg-gradient text-white" style="margin-bottom:100px;">
+
+</header>
+
+
+<!-- search section-->
+    <section id="about">
+           <div class="container">
+                <div class="row my-3" style="position: relative;">
+                    <div class="col-6" style="align:right;">
+                        <div class="input-group" style="max-width: 350px;">
+                            <input type="text" id="search_kw" class="form-control" value="{{ kw|default_if_none:'' }}">
+                            <div class="input-group-append" style="margin-left:10px;">
+                                <button class="btn btn-outline-secondary" type="button" id="btn_search">검색</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+           </div>
+    </section>
+
+<!-- list section-->
+<section class="bg-light" id="review_list">
+    <div class="container px-4">
+        <div class="row justify-content-center">
+<!--            <div class="col-lg-10">-->
+                  <table class="rwd-table" style="table-layout:fixed;">
+                    <tbody>
+                    {% if review_list %}
+                      <tr>
+                        <th style="width:50px;text-align:center;">번호</th>
+                        <th style="text-overflow:ellipsis;width:600px;text-align:center;">제목</th>
+                        <th style="text-align:center;">회사명</th>
+                        <th style="text-align:center;">부서</th>
+                        <th style="text-overflow:ellipsis;width:130px;text-align:center;">평점</th>
+                        <th style="text-align:center;">작성일</th>
+                      </tr>
+                     {% for r in page_obj %}
+                      <tr>
+                        <td style="text-align:center;" nowrap>  {{page_obj.start_index|add:forloop.counter0}} </td>
+                        <td style="text-align:left;" nowrap> <a href="{% url 'reviews:review_detail' r.rev_com_id %}">{{ r.rev_title }}</a></td>
+                        <td style="text-align:center;" nowrap> {{ r.rev_com_name }}</td>
+                        <td style="text-align:center;" > {{ r.rev_part }} </td>
+                        <td style="text-align:center;" > {{ r.rev_rate }} </td>
+                        <td style="text-align:center;"> {{ r.rev_date }} </td>
+                      </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <th style="width:50px;text-align:center;">번호</th>
+                        <th style="text-overflow:ellipsis;width:400px;text-align:center;">제목</th>
+                        <th style="text-align:center;">회사명</th>
+                        <th style="text-align:center;">부서</th>
+                        <th style="text-overflow:ellipsis;max-width:100px;text-align:center;">평점</th>
+                        <th style="text-align:center;">작성일</th>
+                      </tr>
+                    <tr>
+                        <td colspan="6" style="text-align:center"><h3>자료가 없어용</h3></td>
+                    </tr>
+                    {% endif %}
+                    </tbody>
+                  </table>
+
+                   <!-- 페이징처리 시작 -->
+                  <ul class="pagination justify-content-center">
+                        <!-- 이전페이지 -->
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" data-page="{{ page_obj.previous_page_number }}"
+                            href="javascript:void(0)">이전</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" tabindex="-1" aria-disabled="true" href="javascript:void(0)">이전</a>
+                        </li>
+                        {% endif %}
+                        <!-- 페이지리스트 -->
+                        {% for page_number in custom_range %}
+                        {% if page_number == page_obj.number %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" data-page="{{ page_number }}"
+                               href="javascript:void(0)">{{ page_number }}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item">
+                            <a class="page-link" data-page="{{ page_number }}"
+                              href="javascript:void(0)">{{ page_number }}</a>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                        <!-- 다음페이지 -->
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" data-page="{{ page_obj.next_page_number }}"
+                               href="javascript:void(0)">다음</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" tabindex="-1" aria-disabled="true" href="javascript:void(0)">다음</a>
+                        </li>
+                        {% endif %}
+                  </ul>
+                    <!-- 페이징처리 끝 -->
+        </div>
+    </div>
+</section>
+
+<form id="searchForm" method="get" action="{% url 'reviews:review_list' %}">
+    <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
+    <input type="hidden" id="page" name="page" value="{{ page }}">
+</form>
+{% endblock %}

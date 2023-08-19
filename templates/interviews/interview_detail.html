@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load list_filter %}
+{% block content %}
+
+<!-- Header-->
+<header class="bg-primary bg-gradient text-white" style="margin-bottom:100px;">
+
+</header>
+
+<div class="container my-3">
+
+    <!-- 회사이름 -->
+    <h2 class="border-bottom py-2">{{ interview_1.name_list }}</h2>
+
+    {% if interview %}
+    <!-- 후기 목록 -->
+    <h5 class="border-bottom my-3 py-2">{{interview.count}}개의 면접 후기가 있습니다.</h5>
+    {% for i in interview %}
+    <div class="card my-3">
+        <div class="card-body">
+            <div class="card-text" style="white-space: pre-line;">
+                <div class='lead'> 질문: </div> {{ i.int_question }} </div>
+            <div class="card-text" style="white-space: pre-line;">
+              <div class='lead'> 답변:  </div> {{ i.int_answer}} </div>
+            <div class="d-flex justify-content-end">
+                <div class="badge bg-light text-dark p-2"> {{ i.post_date }} </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <h5 class="border-bottom my-3 py-2">아직 후기가 없습니다.</h5>
+    {% endif %}
+</div>
+{% endblock %}
